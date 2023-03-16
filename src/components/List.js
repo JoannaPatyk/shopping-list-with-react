@@ -1,0 +1,36 @@
+import React from "react";
+import { BsTrash } from "react-icons/bs";
+import { BiEdit } from "react-icons/bi";
+
+const List = ({ items, removeItem, editItem }) => {
+  return (
+    <div className="grocery-list">
+      {items.map((item) => {
+        const { id, title } = item;
+        return (
+          <article key={id} className="grocery-item">
+            <p className="title">{title}</p>
+            <div className="btn-container">
+              <button
+                type="button"
+                className="edit-btn"
+                onClick={() => editItem(id)}
+              >
+                <BiEdit />
+              </button>
+              <button
+                type="button"
+                className="delete-btn"
+                onClick={() => removeItem(id)}
+              >
+                <BsTrash />
+              </button>
+            </div>
+          </article>
+        );
+      })}
+    </div>
+  );
+};
+
+export default List;

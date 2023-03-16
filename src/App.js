@@ -1,62 +1,66 @@
-import React, { useState, useEffect } from 'react';
-import List from './List';
-import Alert from './Alert';
+import React, { useState, useEffect } from "react";
+import List from "./components/List";
+import Alert from "./components/Alert";
 
 const getLocalStorage = () => {
-  let list = localStorage.getItem('list');
+  let list = localStorage.getItem("list");
 
   if (list) {
-    return JSON.parse(localStorage.getItem('list'))
+    return JSON.parse(localStorage.getItem("list"));
   } else {
     return [];
   }
 };
 
 function App() {
-  const [name, setName] = useState('');
+  const [name, setName] = useState("");
   const [list, setList] = useState(getLocalStorage());
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState(null);
   const [alert, setAlert] = useState({
     show: false,
-    msg: '',
-    type: ''
+    msg: "",
+    type: "",
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     if (!name) {
-      showAlert(true, 'danger', 'please enter value!');
+      showAlert(true, "danger", "please enter value!");
     } else if (name && isEditing) {
-      setList(list.map((item) => {
-        if (item.id === editId) {
-          return { ...item, title: name }
-        }
-        return item;
-      }))
-      setName('');
+      setList(
+        list.map((item) => {
+          if (item.id === editId) {
+            return { ...item, title: name };
+          }
+          return item;
+        })
+      );
+
+      setName("");
       setEditId(null);
       setIsEditing(false);
-      showAlert(true, 'success', 'value change')
+      showAlert(true, "success", "value change");
     } else {
-      showAlert(true, 'success', 'item added to the list');
+      showAlert(true, "success", "item added to the list");
       const newItem = { id: new Date().getTime().toString(), title: name };
       setList([...list, newItem]);
-      setName('');
+      setName("");
     }
   };
 
-  const showAlert = (show = false, type = '', msg = '') => {
+  const showAlert = (show = false, type = "", msg = "") => {
     setAlert({ show, type, msg });
   };
 
   const clearList = () => {
-    showAlert(true, "danger", 'empty list');
+    showAlert(true, "danger", "empty list");
     setList([]);
   };
 
   const removeItem = (id) => {
-    showAlert(true, "danger", 'item remove');
+    showAlert(true, "danger", "item remove");
     setList(list.filter((item) => item.id !== id));
   };
 
@@ -68,35 +72,37 @@ function App() {
   };
 
   useEffect(() => {
-    localStorage.setItem('list', JSON.stringify(list))
+    localStorage.setItem("list", JSON.stringify(list));
   }, [list]);
 
   return (
-    <section className='section-center'>
-      <form className='grocery-form' onSubmit={handleSubmit}>
+    <section className="section-center">
+      <form className="grocery-form" onSubmit={handleSubmit}>
         {alert.show && <Alert {...alert} removeAlert={showAlert} list={list} />}
         <h3>shopping list</h3>
-        <div className='form-control'>
+        <div className="form-control">
           <input
-            type='text'
-            className='grocery'
-            placeholder='e.g eggs'
+            type="text"
+            className="grocery"
+            placeholder="e.g eggs"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
-          <button type='submit' className='submit-btn'>
-            {isEditing ? 'edit' : 'submit'}
+          <button type="submit" className="submit-btn">
+            {isEditing ? "edit" : "submit"}
           </button>
         </div>
       </form>
       {list.length > 0 && (
-        <div className='grocery-container'>
+        <div className="grocery-container">
           <List items={list} removeItem={removeItem} editItem={editItem} />
-          <button className='clear-btn' onClick={clearList}>clear items</button>
+          <button className="clear-btn" onClick={clearList}>
+            clear items
+          </button>
         </div>
       )}
     </section>
   );
 }
 
-export default App
+export default App;
